@@ -14,6 +14,11 @@ module.exports = {
 		'no-console': 0,
 		indent: ['error', 'tab'],
 		'no-tabs': [2, { allowIndentationTabs: true }],
-		'prettier/prettier': ['error'],
+		'prettier/prettier': [
+			'error',
+			{
+				endOfLine: 'auto',
+			},
+		],
 	},
 };
