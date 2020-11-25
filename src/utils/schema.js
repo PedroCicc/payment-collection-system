@@ -1,5 +1,3 @@
-const db = require('./database');
-
 const schema = {
 	1: `
 	CREATE TABLE IF NOT EXISTS users (
