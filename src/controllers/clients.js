@@ -28,7 +28,7 @@ async function createClient(ctx) {
 		cpf,
 		email,
 		tel,
-		userId,
+		userId
 	);
 
 	if (newClient) {
@@ -38,16 +38,15 @@ async function createClient(ctx) {
 	return response(ctx, 400, { message: 'Erro desconhecido.' });
 }
 
-async function editClient(ctx) {
-	const {
-		name = null,
-		cpf = null,
-		email = null,
-		tel = null,
-	} = ctx.request.body;
-}
+// async function editClient(ctx) {
+// const {
+// name = null,
+// cpf = null,
+// email = null,
+// tel = null,
+// } = ctx.request.body;
+// }
 
 module.exports = {
 	createClient,
-	editClient,
 };
