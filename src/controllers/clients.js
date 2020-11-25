@@ -9,7 +9,7 @@ async function createClient(ctx) {
 		tel = null,
 	} = ctx.request.body;
 
-	const userID = ctx.state.user;
+	const userId = ctx.state.user;
 
 	if (!name || !cpf || !email || !tel) {
 		return response(ctx, 400, { message: 'Pedido mal formatado.' });
@@ -28,7 +28,7 @@ async function createClient(ctx) {
 		cpf,
 		email,
 		tel,
-		userID
+		userId,
 	);
 
 	if (newClient) {
@@ -47,4 +47,7 @@ async function editClient(ctx) {
 	} = ctx.request.body;
 }
 
-module.exports = { createClient };
+module.exports = {
+	createClient,
+	editClient,
+};
