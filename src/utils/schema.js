@@ -1,8 +1,13 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable guard-for-in */
+const db = require('./database');
+
 const schema = {
 	1: `
 	CREATE TABLE IF NOT EXISTS users (
 		id SERIAL PRIMARY KEY,
-		name TEXT NOT NULL,
+		name TEXT,
 		email TEXT NOT NULL,
 		password TEXT NOT NULL,
 		deleted BOOL DEFAULT FALSE
@@ -33,5 +38,26 @@ const schema = {
 	)
 	`,
 };
+
+const drop = async (tableName) => {
+	if (tableName) {
+		await db.query(`DROP TABLE ${tableName}`);
+		console.log('Tabela dropada!');
+	}
+};
+
+const up = async (number = null) => {
+	if (!number) {
+		for (const value in schema) {
+			await db.query({ text: schema[value] });
+		}
+	} else {
+		await db.query({ text: schema[number] });
+	}
+	console.log('Migração rodada!');
+};
+
+// drop('users');
+// up();
 
 module.exports = { schema };
