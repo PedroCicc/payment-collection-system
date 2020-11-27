@@ -9,7 +9,7 @@ async function createClient(ctx) {
 		tel = null,
 	} = ctx.request.body;
 
-	const userId = ctx.state.user;
+	const userId = ctx.state.id;
 
 	if (!name || !cpf || !email || !tel) {
 		return response(ctx, 400, { message: 'Pedido mal formatado.' });
@@ -38,6 +38,12 @@ async function createClient(ctx) {
 	return response(ctx, 400, { message: 'Erro desconhecido.' });
 }
 
+// const getClients = (ctx, userId) => {
+// 	const { clientsPerPage = null, offset = null } = ctx.query;
+
+// 	if (!clientsPerPage)
+// }
+
 // async function editClient(ctx) {
 // const {
 // name = null,
@@ -49,4 +55,5 @@ async function createClient(ctx) {
 
 module.exports = {
 	createClient,
+	// getClients,
 };
