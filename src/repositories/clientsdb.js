@@ -13,7 +13,7 @@ async function getClientByEmail(email) {
 
 async function insertClient(name, cpf, email, tel, userId) {
 	const query = `INSERT INTO clients (
-		name, cpf, email, tel, user_Id
+		name, cpf, email, tel, user_id
 		) values ($1, $2, $3, $4, $5)
 		RETURNING *`;
 
