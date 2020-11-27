@@ -3,8 +3,8 @@ const response = (ctx, code, data) => {
 	ctx.status = code;
 	ctx.body = {
 		status,
-		data,
+		dados: data,
 	};
 };
 
-module.exports = { response };
+module.exports = response;
