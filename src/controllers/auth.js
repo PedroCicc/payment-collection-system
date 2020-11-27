@@ -19,10 +19,10 @@ async function authenticate(ctx) {
 		const comparison = await Password.check(password, user.password);
 		if (comparison) {
 			const token = jwt.sign(
-				{ id: users.id, email: users.email },
+				{ id: user.id, email: user.email },
 				process.env.JWT_SECRET,
 				{
-					expiresIn: '1h',
+					expiresIn: '30d',
 				}
 			);
 			return response(ctx, 200, {
