@@ -5,4 +5,9 @@ async function check(password, hash) {
 	return comparison;
 }
 
-module.exports = { check };
+const encrypt = async (password) => {
+	const hash = await bcrypt.hash(password, 10);
+	return hash;
+};
+
+module.exports = { check, encrypt };
