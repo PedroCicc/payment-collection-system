@@ -2,9 +2,9 @@ const response = require('./response');
 const UsersDB = require('../repositories/usersdb');
 
 async function createUser(ctx) {
-	const { email = null, password = null } = ctx.request.body;
-
-	if (!email || !password) {
+	const { email = null } = ctx.request.body;
+	console.log(email);
+	if (!email) {
 		return response(ctx, 400, { message: 'Pedido mal formatado.' });
 	}
 
@@ -16,7 +16,7 @@ async function createUser(ctx) {
 		});
 	}
 
-	const newUser = await UsersDB.insertUser(email, password);
+	const newUser = await UsersDB.insertUser(email, ctx.state.hash);
 
 	if (newUser) {
 		return response(ctx, 201, { id: newUser.id });
