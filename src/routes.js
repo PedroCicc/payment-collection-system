@@ -12,7 +12,8 @@ const Payments = require('./controllers/payments');
 router.post('/auth', Auth.authenticate);
 router.post('/usuarios', Encrypt.encrypt, Users.createUser);
 router.post('/clientes', Session.verify, Clients.createClient);
-// router.put('/clientes', Clients.editClient);
+router.put('/clientes', Session.verify, Clients.editClient);
+router.get('/clientes', Session.verify, Clients.getClients);
 router.post('/cobrancas', Session.verify, Payments.createPayment);
 
 module.exports = router;
