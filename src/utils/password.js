@@ -1,12 +1,12 @@
 const bcrypt = require('bcryptjs');
 
-async function check(password, hash) {
-	const comparison = await bcrypt.compare(password, hash);
+async function check(senha, hash) {
+	const comparison = await bcrypt.compare(senha, hash);
 	return comparison;
 }
 
-const encrypt = async (password) => {
-	const hash = await bcrypt.hash(password, 10);
+const encrypt = async (senha) => {
+	const hash = await bcrypt.hash(senha, 10);
 	return hash;
 };
 
