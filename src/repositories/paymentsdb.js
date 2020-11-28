@@ -1,10 +1,5 @@
 const db = require('../utils/database');
 
-// Corrigir, não posso checar se a cobrança existe pelo client id
-async function getPaymentsByClientId(clientId) {
-
-}
-
 async function insertPayment(clientId, description, value, dueDate) {
 	const query = `INSERT INTO payments (
 		client_id, description, value, due_date
@@ -20,6 +15,5 @@ async function insertPayment(clientId, description, value, dueDate) {
 }
 
 module.exports = {
-	getPaymentsByClientId,
 	insertPayment,
 };
