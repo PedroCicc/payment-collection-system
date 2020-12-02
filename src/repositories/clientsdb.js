@@ -1,12 +1,11 @@
 const { off } = require('../utils/database');
 const db = require('../utils/database');
 
-async function getClientByEmail(email) {
-	const query = 'SELECT * FROM clients WHERE email = $1';
-	// Pegar userID
+async function getClientByEmail(userId, email) {
+	const query = 'SELECT * FROM clients WHERE user_id = $1 AND email = $2';
 	const result = await db.query({
 		text: query,
-		values: [email],
+		values: [userId, email],
 	});
 
 	return result.rows.shift();
