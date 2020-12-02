@@ -10,13 +10,13 @@ async function createClient(ctx) {
 		tel = null,
 	} = ctx.request.body;
 
-	const idDoUsuario = ctx.state.id;
+	const userId = ctx.state.id;
 
 	if (!nome || !cpf || !email || !tel) {
 		return response(ctx, 400, { mensagem: 'Pedido mal formatado.' });
 	}
 
-	const client = await ClientsDB.getClientByEmail(email);
+	const client = await ClientsDB.getClientByEmail(userId, email);
 
 	if (client) {
 		return response(ctx, 400, {
@@ -29,7 +29,7 @@ async function createClient(ctx) {
 		cpf,
 		email,
 		tel,
-		idDoUsuario
+		userId
 	);
 
 	if (newClient) {
@@ -73,7 +73,7 @@ async function getClients(ctx) {
 	const userId = ctx.state.id;
 	const { busca = null, clientesPorPagina = 10, offset = 0 } = ctx.query;
 
-	console.log(userId);
+	// console.log(userId);
 	if (!userId) {
 		return response(ctx, 400, { mensagem: 'Pedido mal formatado.' });
 	}
