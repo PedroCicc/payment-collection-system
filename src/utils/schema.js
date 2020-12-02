@@ -34,6 +34,7 @@ const schema = {
 		description TEXT NOT NULL,
 		payment_slip_link TEXT NOT NULL,
 		codebar TEXT NOT NULL,
+		status TEXT NOT NULL,
 		deleted BOOL DEFAULT FALSE
 	)
 	`,
@@ -57,7 +58,7 @@ const up = async (number = null) => {
 	console.log('Migração rodada!');
 };
 
-// drop('users');
+// drop('payments');
 // up();
 
 module.exports = { schema };
