@@ -32,7 +32,6 @@ async function gerarBoleto(nome, cpf, descricao, valor, vencimento) {
 	} catch (err) {
 		console.log(err.response.data.errors);
 	}
-	return response(ctx, 400, { mensagem: 'Não foi possível gerar o boleto.' });
 }
 
 module.exports = { gerarBoleto };
