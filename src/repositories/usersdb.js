@@ -1,7 +1,7 @@
 const db = require('../utils/database');
 
 async function getUserByEmail(email) {
-	const query = 'SELECT * FROM users WHERE email = $1';
+	const query = `SELECT * FROM users WHERE email = $1`;
 
 	const result = await db.query({
 		text: query,
@@ -12,10 +12,10 @@ async function getUserByEmail(email) {
 }
 
 async function insertUser(email, password) {
-	const query = `INSERT INTO users (
-		email, password
-		) values ($1, $2)
-		RETURNING *`;
+	const query = `INSERT INTO users
+	(email, password)
+	values ($1, $2)
+	RETURNING *`;
 
 	const result = await db.query({
 		text: query,
