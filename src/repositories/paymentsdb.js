@@ -1,9 +1,9 @@
 const db = require('../utils/database');
 
 async function insertPayment(clientId, description, value, dueDate, linkDoBoleto, codebar) {
-	const query = `INSERT INTO payments (
-		client_id, description, value, due_date, payment_slip_link, codebar
-	) values ($1, $2, $3, $4, $5, $6)
+	const query = `INSERT INTO payments
+	(client_id, description, value, due_date, payment_slip_link, codebar)
+	values ($1, $2, $3, $4, $5, $6)
 	RETURNING *`;
 
 	const result = await db.query({
@@ -29,12 +29,12 @@ async function setPaymentAsPaid(idDaCobranca, currentDate) {
 
 async function getPayments(userId, cobrancasPorPagina, offset) {
 	const query = `SELECT payments.id, payments.client_id, payments.description, payments.value,
-		payments.due_date, payments.payment_date, payments.payment_slip_link
-		FROM payments
-		INNER JOIN clients
-		ON payments.client_id = clients.id
-		WHERE clients.user_id = $1
-		LIMIT $2 OFFSET $3;`;
+	payments.due_date, payments.payment_date, payments.payment_slip_link
+	FROM payments
+	INNER JOIN clients
+	ON payments.client_id = clients.id
+	WHERE clients.user_id = $1
+	LIMIT $2 OFFSET $3;`;
 
 	const result = await db.query({
 		text: query,
@@ -45,7 +45,8 @@ async function getPayments(userId, cobrancasPorPagina, offset) {
 }
 
 async function countPaymentsByPage(userId) {
-	const query = `SELECT count(*)::INTEGER as contagem_de_cobrancas FROM payments
+	const query = `SELECT count(*)::INTEGER as contagem_de_cobrancas
+	FROM payments
 	INNER JOIN clients
 	ON payments.client_id = clients.id
 	WHERE clients.user_id = $1;`;
