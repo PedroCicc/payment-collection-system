@@ -73,6 +73,14 @@ async function getClients(ctx) {
 	const userId = ctx.state.id;
 	const { busca = null, clientesPorPagina = 10, offset = 0 } = ctx.query;
 
+	const contagemDeClientes = await ClientsDB.countClientsByPage(userId);
+	// const contagemDeCobrancas = await ClientsDB.countPaymentsForClient(userId, clients_id);
+	// const contagemDeCobrancasRecebidas = await ClientsDB.countReceivedPayments(userId);
+	// console.log(contagemDeCobrancas);
+
+	const totalDePaginas = Math.ceil(contagemDeClientes.contagem_de_clientes / clientesPorPagina);
+	const paginaAtual = (offset / clientesPorPagina) + 1;
+
 	if (!userId) {
 		return response(ctx, 400, { mensagem: 'Pedido mal formatado.' });
 	}
@@ -98,10 +106,19 @@ async function getClients(ctx) {
 			userId,
 			clientesPorPagina,
 			offset
+			// cobrancasFeitas,
+			// cobrancasRecebidas,
+			// estaInadimplente
 		);
 
 		if (result) {
-			return response(ctx, 200, result);
+			return response(ctx, 200, { 
+				dados: {
+					paginaAtual,
+					totalDePaginas,
+					clientes: [result]
+				}
+			});
 		}
 
 		return response(ctx, 400, {
