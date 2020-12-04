@@ -74,9 +74,13 @@ async function getClients(ctx) {
 	const { busca = null, clientesPorPagina = 10, offset = 0 } = ctx.query;
 
 	const contagemDeClientes = await ClientsDB.countClientsByPage(userId);
-	// const contagemDeCobrancas = await ClientsDB.countPaymentsByClient(userId, clients_id);
+	const listagemDeClientes = await ClientsDB.getAllClients(userId);
+	const result = await Promise.all([listagemDeClientes].map(async () => {
+		console.log(listagemDeClientes);
+		return listagemDeClientes
+	}));
+	const contagemDeCobrancas = await ClientsDB.countPaymentsByClient(userId, listagemDeClientes);
 	// const contagemDeCobrancasRecebidas = await ClientsDB.countReceivedPayments(userId);
-	// console.log(contagemDeCobrancas);
 
 	const totalDePaginas = Math.ceil(contagemDeClientes.contagem_de_clientes / clientesPorPagina);
 	const paginaAtual = (offset / clientesPorPagina) + 1;
@@ -106,9 +110,6 @@ async function getClients(ctx) {
 			userId,
 			clientesPorPagina,
 			offset
-			// cobrancasFeitas,
-			// cobrancasRecebidas,
-			// estaInadimplente
 		);
 
 		if (result) {
