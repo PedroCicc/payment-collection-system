@@ -23,23 +23,22 @@ async function createPayment(ctx) {
 		return response(ctx, 400, { mensagem: 'O cliente não existe.' });
 	}
 
-	const boletoBancario = await Pagarme.gerarBoleto(
+	const pagarmeResponse = await Pagarme.gerarBoleto(
 		cliente.name,
 		cliente.cpf,
 		descricao,
 		valor,
 		vencimento
 	);
-	// console.log(boletoBancario);
-	if (!boletoBancario) {
+
+	if (pagarmeResponse.erro) {
+		console.log(pagarmeResponse.erro);
 		return response(ctx, 400, {
-			mensagem: 'Não foi possível gerar o boleto.',
+			mensagem: 'Não foi possível gerar o boleto na Pagar.me.',
 		});
-		// Exibir erro da pagarme
 	}
 	
-	const newPayment = await PaymentsDB.insertPayment(idDoCliente, descricao, valor, vencimento, boletoBancario.boleto_url, boletoBancario.boleto_barcode, boletoBancario.status);
-	// console.log(newPayment);
+	const newPayment = await PaymentsDB.insertPayment(idDoCliente, descricao, valor, vencimento, pagarmeResponse.boleto.boleto_url, pagarmeResponse.boleto.boleto_barcode, pagarmeResponse.boleto.status);
 
 	if (newPayment) {
 		return response(ctx, 201, {
@@ -48,34 +47,73 @@ async function createPayment(ctx) {
 				descricao,
 				valor,
 				vencimento,
-				linkDoBoleto: boletoBancario.boleto_url,
+				linkDoBoleto: pagarmeResponse.boleto.boleto_url,
 				status: 'AGUARDANDO'
 			},
 		});
 	}
-	// return response(ctx, 200, { mensagem: 'Sucesso.', boletoBancario });
 
 	return response(ctx, 400, { mensagem: 'Erro desconhecido.' });
 }
 
+async function getPayments(ctx) {
+	const userId = ctx.state.id;
+	const { cobrancasPorPagina = 10, offset = 0 } = ctx.query;
+
+	const payments = await PaymentsDB.getPayments(userId, cobrancasPorPagina, offset);
+	const contagem = await PaymentsDB.countPaymentsByPage(userId);
+
+	const totalDePaginas = Math.ceil(contagem.contagem_de_cobrancas / cobrancasPorPagina);
+	const paginaAtual = (offset / cobrancasPorPagina) + 1;
+
+	let currentDate = new Date();
+
+	for (let i = 0; i < payments.length; i++) {
+		if (payments[i].payment_date !== null) {
+			if (payments[i].payment_date < payments[i].due_date) {
+				payments[i].status = 'PAGO';
+			} else if (payments[i].payment_date > payments[i].due_date) {
+				payments[i].status = 'VENCIDO';
+			}
+		} else {
+			if (currentDate > payments[i].due_date) {
+				payments[i].status = 'VENCIDO';
+			} else {
+				payments[i].status = 'AGUARDANDO';
+			}
+		}
+	}
+
+	return response(ctx, 200, { 
+		dados: {
+			paginaAtual,
+			totalDePaginas,
+			cobrancas: [payments]
+		}
+	});
+}
+
 async function payPayment(ctx) {
+	const userId = ctx.state.id;
 	const { idDaCobranca = null } = ctx.request.body;
-	console.log(idDaCobranca);
+
 	if (!idDaCobranca) {
 		return response(ctx, 400, { mensagem: 'Pedido mal formatado.' });
 	}
 
-	const payment = await PaymentsDB.getPaymentById(idDaCobranca);
-	console.log(`Payment: ${payment}`);
+	let currentDate = new Date();
+
+	const payment = await PaymentsDB.setPaymentAsPaid(idDaCobranca, currentDate);
+
 	if (!payment) {
 		return response(ctx, 400, { mensagem: 'A cobrança não existe.' });
 	}
 
-	// Payment tá dando undefined, pq?
-	// Como pegar boleto exato que eu quero pagar se não tá indo pelo id dele? Pego id do usuario?
+	return response(ctx, 200, { mensagem: 'Cobrança paga com sucesso' });
 }
 
 module.exports = {
 	createPayment,
-	payPayment
+	payPayment,
+	getPayments
 };
