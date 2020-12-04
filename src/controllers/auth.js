@@ -21,7 +21,7 @@ async function authenticate(ctx) {
 				{ id: user.id, email: user.email },
 				process.env.JWT_SECRET,
 				{
-					expiresIn: '30d',
+					expiresIn: '1h',
 				}
 			);
 			return response(ctx, 200, {
