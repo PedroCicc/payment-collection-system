@@ -4,7 +4,6 @@ const response = require('../controllers/response');
 require('dotenv').config();
 
 async function gerarBoleto(nome, cpf, descricao, valor, vencimento) {
-	console.log(cpf);
 	const objeto = {
 		amount: valor,
 		api_key: process.env.PAGARME_KEY,
@@ -28,9 +27,15 @@ async function gerarBoleto(nome, cpf, descricao, valor, vencimento) {
 			'https://api.pagar.me/1/transactions',
 			objeto
 		);
-		return transaction.data;
+		return {
+			boleto: transaction.data,
+			erro: null
+		};
 	} catch (err) {
-		console.log(err.response.data.errors);
+		return {
+			boleto: null,
+			erro: err.response.data.errors
+		};
 	}
 }
 
