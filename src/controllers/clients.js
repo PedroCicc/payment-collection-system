@@ -73,7 +73,6 @@ async function getClients(ctx) {
 	const userId = ctx.state.id;
 	const { busca = null, clientesPorPagina = 10, offset = 0 } = ctx.query;
 
-	// console.log(userId);
 	if (!userId) {
 		return response(ctx, 400, { mensagem: 'Pedido mal formatado.' });
 	}
