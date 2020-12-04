@@ -50,13 +50,17 @@ async function editClient(id, nome, cpf, email) {
 }
 
 async function getClients(userId, clientesPorPagina, offset) {
-	const query = `SELECT * FROM clients WHERE user_id = $1 LIMIT $2 OFFSET $3`;
-
+	const query = `SELECT clients.name, clients.email
+	FROM clients
+	LEFT JOIN payments
+	ON clients.id = payments.client_id
+	WHERE clients.user_id = $1 LIMIT $2 OFFSET $3`;
+	//usar left join
 	const result = await db.query({
 		text: query,
 		values: [userId, clientesPorPagina, offset],
 	});
-
+	// 4 queries: pegar clientes, ver quantas cobranças tem, quantas receberam, e se tão inadimplentes
 	return result.rows;
 }
 
