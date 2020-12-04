@@ -64,6 +64,36 @@ async function getClients(userId, clientesPorPagina, offset) {
 	return result.rows;
 }
 
+async function countClientsByPage(userId) {
+	const query = `SELECT count(*)::INTEGER as contagem_de_clientes
+	FROM clients
+	INNER JOIN payments
+	ON clients.id = payments.client_id
+	WHERE clients.user_id = $1`;
+
+	const result = await db.query({
+		text: query,
+		values: [userId]
+	});
+
+	return result.rows.shift();
+}
+
+async function countPaymentsByClient(userId) {
+	const query = `SELECT count(id)::INTEGER as contagem_de_cobrancas
+	FROM payments
+	INNER JOIN clients
+	ON payments.client_id = clients.id
+	WHERE clients.user_id = $1`;
+	
+	const result = await db.query({
+		text: query,
+		values: [userId]
+	});
+
+	return result.rows.shift();
+}
+
 // Formular função searchClients
 
 module.exports = {
@@ -72,4 +102,6 @@ module.exports = {
 	insertClient,
 	editClient,
 	getClients,
+	countClientsByPage,
+	countPaymentsByClient,
 };
